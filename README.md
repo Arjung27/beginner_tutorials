@@ -4,7 +4,7 @@
 
 ## Overview
 
-This repository contains the development of basic ROS publisher subcriber node. The process is learned and followed from (http://wiki.ros.org/ROS/Tutorials). The development has two nodes:
+This repository contains the development of basic ROS publisher subcriber node. The process is learned and followed from [here](http://wiki.ros.org/ROS/Tutorials). The development has two nodes:
 
 	1. Talker- src/publisher.cpp
 	2. Listener - src/subscriber.cpp
@@ -24,7 +24,8 @@ To build the project follow the steps below:
 mkdir -p ~/catkin_ws/src/
 cd ~/catkin_ws/
 catkin_make
-source ~/catkin_ws/devel/setup.bash (For every new terminal this command needs to be run before running any ROS command. You could add it to your bashrc so that every time a terminal opens it would run by itself)
+source ~/catkin_ws/devel/setup.bash (For every new terminal this command needs to be run before running any 
+	ROS command. You could add it to your bashrc so that every time a terminal opens it would run by itself)
 cd src/
 git clone https://github.com/Arjung27/beginner_tutorials.git
 cd ..
