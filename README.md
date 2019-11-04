@@ -1,5 +1,5 @@
 # Beginner_tutorials - Publisher Subscribers Model
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<a href='https://github.com/Arjung27/beginner_tutorials/blob/master/LICENSE'><img src='https://img.shields.io/badge/License-MIT-brightgreen.svg'/></a>
 ---
 
 ## Overview
