@@ -171,6 +171,7 @@ int main(int argc, char **argv) {
         ROS_WARN_STREAM("Frequency is out of the utility range (i.e. 10-30)");
         frequency++;
         flag = 0;
+        // Conditional to set flag equal to 1
         if (frequency >= 49) {
           flag = 1;
         }
@@ -182,6 +183,10 @@ int main(int argc, char **argv) {
           ROS_DEBUG_STREAM("Frequency is too high reducing it");
           frequency--;
           flag = 1;
+          // Conditional to set flag equal to 0
+          if (frequency == 20) {
+            flag = 0;
+          }
       }
     /**
      * The publish() function is how you send messages. The parameter
