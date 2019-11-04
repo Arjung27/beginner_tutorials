@@ -43,9 +43,16 @@
 /**
  * Declare the global string variable and initializing it
  */
+extern std::string defaultMessage = "Updated Frequency";
 
-extern std::string defaultMessage = "Updated Frequency ";
-
+/**
+ * @brief Function to change the output base string
+ * 
+ * @param req Request message
+ * @param resp Response message
+ * 
+ * @return bool if callback function ran successfully or not
+ */
 bool modifyDefaultMessage( \
                   beginner_tutorials::modifyDefaultMessage::Request &req, \
                   beginner_tutorials::modifyDefaultMessage::Response &resp) {
@@ -70,23 +77,24 @@ int main(int argc, char **argv) {
    * You must call one of the versions of ros::init() before using any other
    * part of the ROS system.
    */
-// %Tag(INIT)%
+  // %Tag(INIT)%
   ros::init(argc, argv, "talker");
-// %EndTag(INIT)%
-if (argc == 2) {
-  frequency = atoi(argv[1]);
-} else {
-  ROS_WARN_STREAM("Since no input is given using default starting frequency");
-}
+  // %EndTag(INIT)%
+  // If and else conditional check to see of the user has set any input or not
+  if (argc == 2) {
+    frequency = atoi(argv[1]);
+  } else {
+    ROS_WARN_STREAM("Since no input is given using default starting frequency");
+  }
 
   /**
    * NodeHandle is the main access point to communications with the ROS system.
    * The first NodeHandle constructed will fully initialize this node, and the last
    * NodeHandle destructed will close down the node.
    */
-// %Tag(NODEHANDLE)%
+  // %Tag(NODEHANDLE)%
   ros::NodeHandle n;
-// %EndTag(NODEHANDLE)%
+  // %EndTag(NODEHANDLE)%
 
   /**
    * The advertise() function is how you tell ROS that you want to
@@ -105,78 +113,86 @@ if (argc == 2) {
    * than we can send them, the number here specifies how many messages to
    * buffer up before throwing some away.
    */
-// %Tag(PUBLISHER)%
+  // %Tag(PUBLISHER)%
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-// %EndTag(PUBLISHER)%
-// Flag to check if frequency is in acceptable range or not
-int flag = 0;
-if (frequency <= 0) {
-  ROS_ERROR_STREAM("Frequency is set to less than equal to 0");
-  frequency = 1;
-  ROS_DEBUG_STREAM("Since frequency <= 0, setting frequency to 1");
-}
-// %Tag(LOOP_RATE)%
+  // %EndTag(PUBLISHER)%
+
+  // Flag to check if frequency is in acceptable range or not
+  int flag = 0;
+  /** 
+   * Conditional check if the frequency is less than zero or not if less than 
+   * zero then set the frequency to 1 else continue with the entered/default 
+   * frequency
+  */
+  if (frequency <= 0) {
+    ROS_ERROR_STREAM("Frequency is set to less than equal to 0");
+    frequency = 1;
+    ROS_DEBUG_STREAM("Since frequency <= 0, setting frequency to 1");
+  }
+  // %Tag(LOOP_RATE)%
   ros::Rate loop_rate(frequency);
-// %EndTag(LOOP_RATE)%
+  // %EndTag(LOOP_RATE)%
+  // Call to callback function designed to modify the base output string
   auto server = n.advertiseService("modifyDefaultMessage", \
                                               modifyDefaultMessage);
-  /**
-   * A count of how many messages we have sent. This is used to create
-   * a unique string for each message.
-   */
-// %Tag(ROS_OK)%
+  // Conditional to check if the node is running or not
+  // %Tag(ROS_OK)%
   if (!ros::ok()) {
     ROS_FATAL_STREAM("ROS node not running");
   }
+  /**
+   * While loop to print the output as per the current frequency. 
+   * THe output of the stream changes as per the range of frequency. 
+   * If frequency is too high i.e. greater than 50 then we reduce the 
+   * frequency to bring it to the desired range.
+   */ 
   while (ros::ok()) {
-// %EndTag(ROS_OK)%
     /**
      * This is a message object. You stuff it with data, and then publish it.
      */
     std_msgs::String message;
     std::stringstream ss;
-    ss << defaultMessage << frequency;
+    ss << defaultMessage << " " << frequency;
     message.data = ss.str();
 
-// %Tag(ROSCONSOLE)%
+    // %Tag(ROSCONSOLE)%
     ROS_INFO("%s", message.data.c_str());
-// %EndTag(ROSCONSOLE)%
-  if ((frequency < 10) || (frequency > 30) && flag == 0) {
-      ROS_WARN_STREAM("Frequency is out of the utility range (i.e. 10-30)");
-      frequency++;
-      flag = 0;
-      if (frequency >= 49) {
-        flag = 1;
-      }
-    } else if ((frequency >= 10) && (frequency <= 30) && flag == 0) {
-        ROS_INFO_STREAM("Frequency is in utility range (i.e. 10-30)");
+    // %EndTag(ROSCONSOLE)%
+    // Conditional to check the range of frequency
+    if ((frequency < 10) || (frequency > 30) && flag == 0) {
+        ROS_WARN_STREAM("Frequency is out of the utility range (i.e. 10-30)");
         frequency++;
         flag = 0;
-    } else if (frequency >= 50 || flag == 1) {
-        ROS_DEBUG_STREAM("Frequency is too high reducing it");
-        frequency--;
-        flag = 1;
-    }
+        if (frequency >= 49) {
+          flag = 1;
+        }
+      } else if ((frequency >= 10) && (frequency <= 30) && flag == 0) {
+          ROS_INFO_STREAM("Frequency is in utility range (i.e. 10-30)");
+          frequency++;
+          flag = 0;
+      } else if (frequency >= 50 || flag == 1) {
+          ROS_DEBUG_STREAM("Frequency is too high reducing it");
+          frequency--;
+          flag = 1;
+      }
     /**
      * The publish() function is how you send messages. The parameter
      * is the message object. The type of this object must agree with the type
      * given as a template parameter to the advertise<>() call, as was done
      * in the constructor above.
      */
-// %Tag(PUBLISH)%
+    // %Tag(PUBLISH)%
     chatter_pub.publish(message);
-// %EndTag(PUBLISH)%
+    // %EndTag(PUBLISH)%
 
-// %Tag(SPINONCE)%
+    // %Tag(SPINONCE)%
     ros::spinOnce();
-// %EndTag(SPINONCE)%
+    // %EndTag(SPINONCE)%
 
-// %Tag(RATE_SLEEP)%
+    // %Tag(RATE_SLEEP)%
     loop_rate.sleep();
-// %EndTag(RATE_SLEEP)%
+    // %EndTag(RATE_SLEEP)%
   }
-
-
   return 0;
 }
 // %EndTag(FULLTEXT)%
