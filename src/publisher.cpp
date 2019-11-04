@@ -38,11 +38,27 @@
 #include <sstream>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "beginner_tutorials/modifyDefaultMessage.h"
 
+/**
+ * Declare the global string variable and initializing it
+ */
+
+extern std::string defaultMessage = "Updated Frequency ";
+
+bool modifyDefaultMessage(beginner_tutorials::modifyDefaultMessage::Request &req, \
+                          beginner_tutorials::modifyDefaultMessage::Response &resp) {
+  defaultMessage = req.inputMessage;
+  resp.outputMessage = defaultMessage; 
+  ROS_INFO_STREAM("New default message is: " << defaultMessage);
+  return true;
+}
 /**
  * This tutorial demonstrates simple sending of messages over the ROS system.
  */
 int main(int argc, char **argv) {
+  // Default frequency value
+  int frequency = 20;
   /**
    * The ros::init() function needs to see argc and argv so that it can perform
    * any ROS arguments and name remapping that were provided at the command line.
@@ -56,6 +72,11 @@ int main(int argc, char **argv) {
 // %Tag(INIT)%
   ros::init(argc, argv, "talker");
 // %EndTag(INIT)%
+if (argc == 2) {
+  frequency = atoi(argv[1]);
+} else {
+  ROS_WARN_STREAM("Since no input is given using default starting frequency");
+}
 
   /**
    * NodeHandle is the main access point to communications with the ROS system.
@@ -86,33 +107,39 @@ int main(int argc, char **argv) {
 // %Tag(PUBLISHER)%
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 // %EndTag(PUBLISHER)%
-
+if (frequency <= 0) {
+  ROS_ERROR_STREAM("Frequency is set to less than equal to 0");
+  frequency = 1;
+  ROS_DEBUG_STREAM("Since frequency <= 0, setting frequency to 1");
+}
 // %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(frequency);
 // %EndTag(LOOP_RATE)%
-
+  auto server = n.advertiseService("modifyDefaultMessage", \
+                                              modifyDefaultMessage); 
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
    */
 // %Tag(ROS_OK)%
-  int count = 0;
   while (ros::ok()) {
 // %EndTag(ROS_OK)%
     /**
      * This is a message object. You stuff it with data, and then publish it.
      */
-// %Tag(FILL_MESSAGE)%
-    std_msgs::String msg;
-
+    std_msgs::String message;
     std::stringstream ss;
-    ss << "Hi! This is my first ROS assignment " << count;
-    msg.data = ss.str();
-// %EndTag(FILL_MESSAGE)%
+    ss << defaultMessage << frequency;
+    message.data = ss.str();
 
 // %Tag(ROSCONSOLE)%
-    ROS_INFO("%s", msg.data.c_str());
+    ROS_INFO("%s", message.data.c_str());
 // %EndTag(ROSCONSOLE)%
+  if ((frequency < 10) || (frequency > 30)) {
+      ROS_WARN_STREAM("Frequency is out of the utility range (i.e. 10-30)");
+    } else {
+      ROS_INFO_STREAM("Frequency is in utility range (i.e. 10-30)");
+    }
 
     /**
      * The publish() function is how you send messages. The parameter
@@ -121,7 +148,7 @@ int main(int argc, char **argv) {
      * in the constructor above.
      */
 // %Tag(PUBLISH)%
-    chatter_pub.publish(msg);
+    chatter_pub.publish(message);
 // %EndTag(PUBLISH)%
 
 // %Tag(SPINONCE)%
@@ -131,7 +158,7 @@ int main(int argc, char **argv) {
 // %Tag(RATE_SLEEP)%
     loop_rate.sleep();
 // %EndTag(RATE_SLEEP)%
-    ++count;
+    frequency++;
   }
 
 
