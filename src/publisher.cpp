@@ -125,6 +125,9 @@ if (frequency <= 0) {
    * a unique string for each message.
    */
 // %Tag(ROS_OK)%
+  if (!ros::ok()) {
+    ROS_FATAL_STREAM("ROS node not running");
+  }
   while (ros::ok()) {
 // %EndTag(ROS_OK)%
     /**
