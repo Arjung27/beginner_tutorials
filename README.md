@@ -38,7 +38,7 @@ To run the given model, follow the following steps (NOTE: Every ros command belo
 
 ```
 1. roscore
-2. rosrun beginner_tutorials publisher
+2. rosrun beginner_tutorials publisher <frequency_value(optional)>
 3. rosrun beginner_tutorials subscriber
 ```
 NOTE: if ~/catkin_ws/devel/setup.bash is not added to bash then run it before running each command mentioned above and run each command in separate terminal.
