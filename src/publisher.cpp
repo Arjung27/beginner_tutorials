@@ -46,10 +46,11 @@
 
 extern std::string defaultMessage = "Updated Frequency ";
 
-bool modifyDefaultMessage(beginner_tutorials::modifyDefaultMessage::Request &req, \
-                          beginner_tutorials::modifyDefaultMessage::Response &resp) {
+bool modifyDefaultMessage( \
+                  beginner_tutorials::modifyDefaultMessage::Request &req, \
+                  beginner_tutorials::modifyDefaultMessage::Response &resp) {
   defaultMessage = req.inputMessage;
-  resp.outputMessage = defaultMessage; 
+  resp.outputMessage = defaultMessage;
   ROS_INFO_STREAM("New default message is: " << defaultMessage);
   return true;
 }
@@ -107,6 +108,8 @@ if (argc == 2) {
 // %Tag(PUBLISHER)%
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 // %EndTag(PUBLISHER)%
+// Flag to check if frequency is in acceptable range or not
+int flag = 0;
 if (frequency <= 0) {
   ROS_ERROR_STREAM("Frequency is set to less than equal to 0");
   frequency = 1;
@@ -116,7 +119,7 @@ if (frequency <= 0) {
   ros::Rate loop_rate(frequency);
 // %EndTag(LOOP_RATE)%
   auto server = n.advertiseService("modifyDefaultMessage", \
-                                              modifyDefaultMessage); 
+                                              modifyDefaultMessage);
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
@@ -135,12 +138,22 @@ if (frequency <= 0) {
 // %Tag(ROSCONSOLE)%
     ROS_INFO("%s", message.data.c_str());
 // %EndTag(ROSCONSOLE)%
-  if ((frequency < 10) || (frequency > 30)) {
+  if ((frequency < 10) || (frequency > 30) && flag == 0) {
       ROS_WARN_STREAM("Frequency is out of the utility range (i.e. 10-30)");
-    } else {
-      ROS_INFO_STREAM("Frequency is in utility range (i.e. 10-30)");
+      frequency++;
+      flag = 0;
+      if (frequency >= 49) {
+        flag = 1;
+      }
+    } else if ((frequency >= 10) && (frequency <= 30) && flag == 0) {
+        ROS_INFO_STREAM("Frequency is in utility range (i.e. 10-30)");
+        frequency++;
+        flag = 0;
+    } else if (frequency >= 50 || flag == 1) {
+        ROS_DEBUG_STREAM("Frequency is too high reducing it");
+        frequency--;
+        flag = 1;
     }
-
     /**
      * The publish() function is how you send messages. The parameter
      * is the message object. The type of this object must agree with the type
@@ -158,7 +171,6 @@ if (frequency <= 0) {
 // %Tag(RATE_SLEEP)%
     loop_rate.sleep();
 // %EndTag(RATE_SLEEP)%
-    frequency++;
   }
 
 
