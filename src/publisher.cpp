@@ -117,7 +117,9 @@ int main(int argc, char **argv) {
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
   // %EndTag(PUBLISHER)%
 
-  // Flag to check if frequency is in acceptable range or not
+  /**
+  * Flag to check if frequency is in acceptable range or not
+  */
   int flag = 0;
   /** 
    * Conditional check if the frequency is less than zero or not if less than 
@@ -132,10 +134,14 @@ int main(int argc, char **argv) {
   // %Tag(LOOP_RATE)%
   ros::Rate loop_rate(frequency);
   // %EndTag(LOOP_RATE)%
-  // Call to callback function designed to modify the base output string
+  /*
+  * Call to callback function designed to modify the base output string
+  */
   auto server = n.advertiseService("modifyDefaultMessage", \
                                               modifyDefaultMessage);
-  // Conditional to check if the node is running or not
+  /* 
+  * Conditional to check if the node is running or not
+  */
   // %Tag(ROS_OK)%
   if (!ros::ok()) {
     ROS_FATAL_STREAM("ROS node not running");
@@ -158,7 +164,9 @@ int main(int argc, char **argv) {
     // %Tag(ROSCONSOLE)%
     ROS_INFO("%s", message.data.c_str());
     // %EndTag(ROSCONSOLE)%
-    // Conditional to check the range of frequency
+    /*
+    * Conditional to check the range of frequency
+    */
     if ((frequency < 10) || (frequency > 30) && flag == 0) {
         ROS_WARN_STREAM("Frequency is out of the utility range (i.e. 10-30)");
         frequency++;
