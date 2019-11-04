@@ -56,11 +56,18 @@ This will start the roscore and the two nodes in single terminal
 
 ## Running the service
 
-We have added the service to modify the base outout string and the service could be accessed using the following commands:
+We have added the service to modify the base outout string and the service could be accessed using the following commands. After you run the two nodes (either using launch file or running nodes separately), Open a new terminal and run the follwing demo commnad:
 ```
-After you run the two nodes (either using launch file or running nodes separately), Open a new terminal and run the follwing demo commnad:
-								rosservice call /modifyDefaultMessage "Current Frequency"
-Instead of "Current Frequency" you could type any custom string and those changes would be reflected in the output terminal
+rosservice call /modifyDefaultMessage "Current Frequency"
+```
+NOTE: Instead of "Current Frequency" you could type any custom string and those changes would be reflected in the output terminal
+
+## How to check the log messages
+
+After you have run the nodes (either using launch file or running nodes separately). You can check the log messages using the GUI provided by ROS 
+by simply typing the following command in a new terminal:
+```
+rqt_console
 ```
 ## Licence 
 
