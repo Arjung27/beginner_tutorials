@@ -37,6 +37,7 @@
 
 #include <sstream>
 #include "ros/ros.h"
+#include <tf/transform_broadcaster.h>
 #include "std_msgs/String.h"
 #include "beginner_tutorials/modifyDefaultMessage.h"
 
@@ -77,9 +78,11 @@ int main(int argc, char **argv) {
    * You must call one of the versions of ros::init() before using any other
    * part of the ROS system.
    */
-  // %Tag(INIT)%
-  ros::init(argc, argv, "talker");
-  // %EndTag(INIT)%
+  ros::init(argc, argv, "publisher");
+  // Creating a TransformBroadcaster object
+  static tf::TransformBroadcaster br;
+  // Creating a Transform object  
+  tf::Transform transform;
   // If and else conditional check to see of the user has set any input or not
   if (argc == 2) {
     frequency = atoi(argv[1]);
@@ -92,9 +95,8 @@ int main(int argc, char **argv) {
    * The first NodeHandle constructed will fully initialize this node, and the last
    * NodeHandle destructed will close down the node.
    */
-  // %Tag(NODEHANDLE)%
+
   ros::NodeHandle n;
-  // %EndTag(NODEHANDLE)%
 
   /**
    * The advertise() function is how you tell ROS that you want to
@@ -113,9 +115,8 @@ int main(int argc, char **argv) {
    * than we can send them, the number here specifies how many messages to
    * buffer up before throwing some away.
    */
-  // %Tag(PUBLISHER)%
+  
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-  // %EndTag(PUBLISHER)%
 
   /**
   * Flag to check if frequency is in acceptable range or not
@@ -131,9 +132,8 @@ int main(int argc, char **argv) {
     frequency = 1;
     ROS_DEBUG_STREAM("Since frequency <= 0, setting frequency to 1");
   }
-  // %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(frequency);
-  // %EndTag(LOOP_RATE)%
+
+  ros::Rate loop_rate(frequency);  
   /*
   * Call to callback function designed to modify the base output string
   */
@@ -142,7 +142,6 @@ int main(int argc, char **argv) {
   /* 
   * Conditional to check if the node is running or not
   */
-  // %Tag(ROS_OK)%
   if (!ros::ok()) {
     ROS_FATAL_STREAM("ROS node not running");
   }
@@ -153,6 +152,15 @@ int main(int argc, char **argv) {
    * frequency to bring it to the desired range.
    */ 
   while (ros::ok()) {
+    // set the translation and rotation values
+    transform.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
+    // Create quaternion object.
+    tf::Quaternion q;
+    // set roll, pitch, yaw values
+    q.setRPY(3.14, 3.14/2, 0);
+    transform.setRotation(q);
+    br.sendTransform(tf::StampedTransform(transform,
+                         ros::Time::now(), "world", "talk"));
     /**
      * This is a message object. You stuff it with data, and then publish it.
      */
@@ -161,9 +169,7 @@ int main(int argc, char **argv) {
     ss << defaultMessage << " " << frequency;
     message.data = ss.str();
 
-    // %Tag(ROSCONSOLE)%
     ROS_INFO("%s", message.data.c_str());
-    // %EndTag(ROSCONSOLE)%
     /*
     * Conditional to check the range of frequency
     */
@@ -194,18 +200,9 @@ int main(int argc, char **argv) {
      * given as a template parameter to the advertise<>() call, as was done
      * in the constructor above.
      */
-    // %Tag(PUBLISH)%
     chatter_pub.publish(message);
-    // %EndTag(PUBLISH)%
-
-    // %Tag(SPINONCE)%
     ros::spinOnce();
-    // %EndTag(SPINONCE)%
-
-    // %Tag(RATE_SLEEP)%
     loop_rate.sleep();
-    // %EndTag(RATE_SLEEP)%
   }
   return 0;
 }
-// %EndTag(FULLTEXT)%
