@@ -69,7 +69,98 @@ by simply typing the following command in a new terminal:
 ```
 rqt_console
 ```
-## Licence 
+
+## TF Frames
+To inspect the static/child tf frames broadcasted by talker node with respect to the parent/world, first launch the talker and listener node. You can do that by:
+```
+roslaunch beginner_tutorials beginner_tutorials.launch
+```
+Now run the following command to view the tf frames:
+```
+rosrun tf tf_echo /world /talk
+```
+
+The above command will give the following output:
+```
+At time 1573497290.201
+- Translation: [0.000, 0.000, 0.000]
+- Rotation: in Quaternion [0.707, 0.001, -0.707, 0.001]
+            in RPY (radian) [3.140, 1.570, 0.000]
+            in RPY (degree) [179.909, 89.954, 0.000]
+At time 1573497290.901
+- Translation: [0.000, 0.000, 0.000]
+- Rotation: in Quaternion [0.707, 0.001, -0.707, 0.001]
+            in RPY (radian) [3.140, 1.570, 0.000]
+            in RPY (degree) [179.909, 89.954, 0.000]
+At time 1573497291.901
+- Translation: [0.000, 0.000, 0.000]
+- Rotation: in Quaternion [0.707, 0.001, -0.707, 0.001]
+            in RPY (radian) [3.140, 1.570, 0.000]
+            in RPY (degree) [179.909, 89.954, 0.000]
+```
+For graphical visualization of the frame use ```rqt_tf_tree``` command:
+```
+rosrun rqt_tf_tree rqt_tf_tree
+```
+This command also generates the pdf storing the result. You can find the pdf in the directory where it is run.
+
+## Running ROSTEST
+
+Used gtest/rostest to create a Level 2 integration test, that tests the Publisher node. To run the test run the following command from your workspace root directory:
+```
+catkin_make run_tests_beginner_tutorials
+```
+This will run the tests and the output will be as follows:
+```
+[Testcase: testtestPublisher] ... ok
+
+[ROSTEST]-----------------------------------------------------------------------
+
+[beginner_tutorials.rosunit-testPublisher/serviceExists][passed]
+[beginner_tutorials.rosunit-testPublisher/serviceMessage][passed]
+
+SUMMARY
+ * RESULT: SUCCESS
+ * TESTS: 2
+ * ERRORS: 0
+ * FAILURES: 0
+```
+
+## Record Bag files
+
+To enable recording of all the topics, we need to launch the nodes and enable recording. We do this simltaneousl using the following command:
+```
+roslaunch beginner_tutorials beginner_tutorials.launch frequency:=1 record:=true
+```
+```frequency:=1``` initializes the frequency to the user set value, by default the value is set to 10. Now to check the recorded files run:
+```
+rosbag info results/listener.bag
+```
+The output of the command would be like:
+```
+path:        results/listener.bag
+version:     2.0
+duration:    14.7s
+start:       Nov 11 2019 00:03:11.68 (1573448591.68)
+end:         Nov 11 2019 00:03:26.36 (1573448606.36)
+size:        224.7 KB
+messages:    1047
+compression: none [1/1 chunks]
+types:       rosgraph_msgs/Log  [acffd30cd6b6de30f120938c17c593fb]
+             std_msgs/String    [992ce8a1687cec8c8bd883ec73ca41d1]
+             tf2_msgs/TFMessage [94810edda583a504dfda3829e70d7eec]
+topics:      /chatter      145 msgs    : std_msgs/String   
+             /rosout       380 msgs    : rosgraph_msgs/Log  (3 connections)
+             /rosout_agg   377 msgs    : rosgraph_msgs/Log 
+             /tf           145 msgs    : tf2_msgs/TFMessage
+```
+To play the rosbag we need to run just the subscriber node and not the publisher node. Run the following subsequent commands in separate terminals:
+```
+roscore
+rosrun beginner_tutorials subscriber
+rosbag play results/listener.bag
+``` 
+## License 
 
 ```
 MIT License
