@@ -72,7 +72,7 @@ TEST(TestSuite, serviceMessage) {
     EXPECT_EQ("Current frequency is", srv.response.outputMessage);
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   ros::init(argc, argv, "testPublisher");
   return RUN_ALL_TESTS();
