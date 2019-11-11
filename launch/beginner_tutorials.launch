@@ -19,4 +19,11 @@
 		type="subscriber"
 		output="screen"
 	/>
+	<node
+	    pkg="rosbag"
+	    name="rosbag_record_all"
+	    type="record"
+	    args="--all --output-name=$(find beginner_tutorials)/results/listener.bag"
+	    if="$(arg record)"
+	    />
 </launch>
