@@ -168,7 +168,7 @@ int main(int argc, char **argv) {
     ss << defaultMessage << " " << frequency;
     message.data = ss.str();
 
-    ROS_INFO_STREAM("%s", message.data.c_str());
+    ROS_INFO("%s", message.data.c_str());
     /*
     * Conditional to check the range of frequency
     */
