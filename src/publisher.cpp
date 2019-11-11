@@ -37,7 +37,7 @@
 
 #include <sstream>
 #include "ros/ros.h"
-#include <tf/transform_broadcaster.h>
+#include "tf/transform_broadcaster.h"
 #include "std_msgs/String.h"
 #include "beginner_tutorials/modifyDefaultMessage.h"
 
@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "publisher");
   // Creating a TransformBroadcaster object
   static tf::TransformBroadcaster br;
-  // Creating a Transform object  
+  // Creating a Transform object
   tf::Transform transform;
   // If and else conditional check to see of the user has set any input or not
   if (argc == 2) {
@@ -115,7 +115,6 @@ int main(int argc, char **argv) {
    * than we can send them, the number here specifies how many messages to
    * buffer up before throwing some away.
    */
-  
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
   /**
@@ -133,7 +132,7 @@ int main(int argc, char **argv) {
     ROS_DEBUG_STREAM("Since frequency <= 0, setting frequency to 1");
   }
 
-  ros::Rate loop_rate(frequency);  
+  ros::Rate loop_rate(frequency);
   /*
   * Call to callback function designed to modify the base output string
   */
