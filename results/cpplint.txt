@@ -1,5 +1,5 @@
-./src/beginner_tutorials/src/publisher.cpp:58:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials::modifyDefaultMessage::Response &resp  [runtime/references] [2]
+./src/beginner_tutorials/src/publisher.cpp:59:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials::modifyDefaultMessage::Response &resp  [runtime/references] [2]
 Done processing ./src/beginner_tutorials/src/publisher.cpp
 Done processing ./src/beginner_tutorials/src/subscriber.cpp
+Done processing ./src/beginner_tutorials/test/testPublisher.cpp
 Total errors found: 1
-
