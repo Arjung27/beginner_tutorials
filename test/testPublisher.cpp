@@ -47,7 +47,7 @@ TEST(TestSuite, serviceExists) {
     // Create a NodeHandle object
     ros::NodeHandle nh;
     // Inititalize a ServiceClient object
-    ros::ServiceClient client = nh.serviceClient<beginner_tutorials::\
+    auto client = nh.serviceClient<beginner_tutorials::\
                     modifyDefaultMessage>("modifyDefaultMessage");
     EXPECT_TRUE(client.waitForExistence(ros::Duration(10)));
 }
@@ -62,7 +62,7 @@ TEST(TestSuite, serviceMessage) {
     // Create a NodeHandle object
     ros::NodeHandle nh;
     // Inititalize a ServiceClient object
-    ros::ServiceClient client = nh.serviceClient<beginner_tutorials::\
+    auto client = nh.serviceClient<beginner_tutorials::\
                     modifyDefaultMessage>("modifyDefaultMessage");
     beginner_tutorials::modifyDefaultMessage srv;
     // Assigning a input message
