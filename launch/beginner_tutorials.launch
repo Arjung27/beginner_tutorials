@@ -5,6 +5,11 @@
 		default="10"
 	/>
 
+	<arg 
+	    name="record" 
+	    default= "false"
+  	/>
+
 	<node
 		pkg="beginner_tutorials"
 		name="publisher"
